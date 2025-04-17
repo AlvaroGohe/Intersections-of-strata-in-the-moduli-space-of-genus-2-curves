@@ -70,11 +70,11 @@ II := [Numerator(i): i in IgusaInvariants(C)];
 
 
 Q0 := Rationals();
-// Q0 := GF(2);
+//Q0 := GF(2);
 P := ProjectiveSpace(Q0,[2,2,2,2,1,1]);
 K<f0,f1,f2,f3,g0,g1>:= CoordinateRing(P);
 C := HyperellipticCurve(Polynomial([-f0, -f1, -f2, -f3, -f2, -f1, -f0]),Polynomial([g0, g1, g1, g0]));
-C := HyperellipticCurve(Polynomial([0, -f1, 0,f3,0,-f1, 0]),Polynomial([g0, 0, 0, g0]));
+//C := HyperellipticCurve(Polynomial([0, -f1, 0,f3,0,-f1, 0]),Polynomial([g0, 0, 0, g0]));
 K<f0,f1,f2,f3,g0,g1>:= BaseRing(C);
 Factorisation(Numerator(Discriminant(C)));
 II := [Numerator(i): i in IgusaInvariants(C)];
