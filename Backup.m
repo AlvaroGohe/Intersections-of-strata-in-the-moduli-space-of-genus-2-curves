@@ -302,11 +302,42 @@ IrreducibleComponents(ReducedSubscheme(JacobianSubrankScheme(SS2)));
 // Study of the stratum associated to the curve D4
 
 K := Rationals();
-K := GF(5);
+// K := GF(5);
 P := ProjectiveSpace(K,2);
 F<f1, f3, f5> := CoordinateRing(P);
 GenD4<x,y,z> := HyperellipticCurve(Polynomial([0, f1, 0, f3, 0, f5])); 
 FF<f1, f3, f5>:= BaseRing(GenD4);
+eqsII := [Numerator(i): i in IgusaInvariants(GenD4)];
+IP<J2,J4,J6,J8,J10> := ProjectiveSpace(K,[1,2,3,4,5]);
+phi := map<P->IP | eqsII>;
+J := ideal< CoordinateRing(IP) | &cat[ DefiningEquations(Image(phi,P,d)) : d in [1..15]] >;
+MinimalBasis(J);
+D4 := Scheme(IP,MinimalBasis(J));
+IrreducibleComponents(ReducedSubscheme(JacobianSubrankScheme(D4)));
+[<Dimension(C), Degree(C)>: C in IrreducibleComponents(ReducedSubscheme(JacobianSubrankScheme(D4)))];
+sptD4 := D4![120, 330, -320, -36825, 11664];
+IsSingular(sptD4);
+sC := HyperellipticCurveFromIgusaInvariants([120, 330, -320, -36825, 11664]);
+P1<x0, x1> := ProjectiveSpace(K,1);
+rat := map<P1->D4 | [x0, (5*x0^2 - 17*x0*x1 + 15*x1^2)/8, -1/16*((3*x0 - 5*x1)*(x0 - 2*x1)^2), (-37*x0^4 + 238*x0^3*x1 - 567*x0^2*x1^2 + 590*x0*x1^3 - 225*x1^4)/256, ((2*x0 - 3*x1)^3*(x0 - 2*x1)^2)/1024]>;
+IrreducibleComponents(BaseScheme(rat));
+invrat := map<D4->P1 | [J2*(11*J2^2 - 480*J4), 5*J2^3 - 224*J2*J4 - 720*J6]>;
+IrreducibleComponents(ReducedSubscheme(BaseScheme(invrat)));
+Expand(rat*invrat);
+F<x0,x1> := FieldOfFractions(CoordinateRing(P1));
+DefiningEquations(rat);
+[(-(x0 - 5/2*x1)/8)^i*Evaluate(eqsII[i],[(2*x0 - 3*x1)/(-8*x0 + 20*x1),1,1]): i in [1..5]];
+
+// Study of the stratum associated to the curve D6
+
+// In characteristic not three
+K := Rationals();
+// K := GF(5);
+P := ProjectiveSpace(K,2);
+F<f0, f1, f2, g0, g1> := CoordinateRing(P);
+GenD6<x,y,z> := HyperellipticCurve(Polynomial([f0, f1, f2, -10*f0 - 5*f1 - 2*f2, 15*f0 + 5*f1 + f2, -6*f0 - f1, f0]),Polynomial([g0, g1, -3*g0 - g1, g0])); 
+
+FF<f0, f1, f2, g0, g1>:= BaseRing(GenD6);
 eqsII := [Numerator(i): i in IgusaInvariants(GenD4)];
 IP<J2,J4,J6,J8,J10> := ProjectiveSpace(K,[1,2,3,4,5]);
 phi := map<P->IP | eqsII>;
@@ -331,6 +362,10 @@ invrat := map<V4->P112 | [J2*(240*J10*J2^3 - 12800*J10*J2*J4 + J2^4*J4^2 - 64*J2
     345*J2^5*J4*J6 + 4664*J2^3*J4^2*J6 - 384*J2*J4^3*J6 + 1500*J2^4*J6^2 - 34236*J2^2*J4*J6^2 - 17280*J4^2*J6^2 + 6480*J2*J6^3))/2]>;
 IrreducibleComponents(BaseScheme(invrat));
 Expand(rat*invrat);
+
+
+
+
 
 //
 p := 17;
