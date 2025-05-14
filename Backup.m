@@ -162,6 +162,7 @@ GroupName(G);
 aut(G.5);
 M2!IgusaInvariants(CG);
 
+
 // The curve with automorphism group SL(2,5)
 K := GF(5);
 P<x> := PolynomialRing(K);
@@ -202,12 +203,9 @@ M2!IgusaInvariants(CG);
 // Study of the stratum associated to the curve C2xC2
 
 K := Rationals();
+p := 23;
 K := GF(5);
 P := ProjectiveSpace(K,[2,2,2,2,1,1]);
-F<f0, f1, f2, f3, g0, g1> := CoordinateRing(P);
-//GenV4<x,y,z> := HyperellipticCurve(Polynomial([f0, f1, f2, f3, f2, f1, f0]),Polynomial([g0, g1, g1, g0])); // This takes a long time to evaluate, so to simplify the calculations, we usually work with the model of the curve of the following line, which outputs the same result.
-GenV4<x,y,z> := HyperellipticCurve(Polynomial([0, f1, 0, f3, 0, f1, 0]),Polynomial([g0, 0, 0, g0])); 
-FF<f0, f1, f2, f3, g0, g1> := BaseRing(GenV4);
 F<f0, f1, f2, f3, g0, g1> := CoordinateRing(P);
 // GenV4<x,y,z> := HyperellipticCurve(Polynomial([f0, f1, f2, -2*f1 + 2*f2 + f3, -f1 + f2 + 3*f3, 3*f3, f3]),Polynomial([g0, g1, g1]));
 GenV4<x,y,z> := HyperellipticCurve(Polynomial([f0, 0, 0, f3, 3*f3, 3*f3, f3]),Polynomial([g0, g1, g1]));
@@ -235,6 +233,25 @@ invrat := map<V4->P112 | [J2*(240*J10*J2^3 - 12800*J10*J2*J4 + J2^4*J4^2 - 64*J2
     345*J2^5*J4*J6 + 4664*J2^3*J4^2*J6 - 384*J2*J4^3*J6 + 1500*J2^4*J6^2 - 34236*J2^2*J4*J6^2 - 17280*J4^2*J6^2 + 6480*J2*J6^3))/2]>;
 IrreducibleComponents(BaseScheme(invrat));
 Expand(rat*invrat);
+
+F<f0, f1, f2, f3, g0, g1> := CoordinateRing(P);
+GenV4<x,y,z> := HyperellipticCurve(Polynomial([f0, f1, f2, -2*f1 + 2*f2 + f3, -f1 + f2 + 3*f3, 3*f3, f3]),Polynomial([g0, g1, g1]));
+FF<f0, f1, f2, f3, g0, g1> := BaseRing(GenV4);
+eqsII := [Numerator(i): i in IgusaInvariants(GenV4)[[1,2,3,4,5]]];
+Factorisation(Numerator(Discriminant(GenV4)));
+[Factorisation(eqs): eqs in eqsII];
+E1<x,y,z> := EllipticCurve([g1, -f1 + f2, f3*g0, f1*f3, f0*f3^2]);
+E1;
+P2<x,y,z> := ProjectiveSpace(FF,2);
+phi1 := map<GenV4->E1 | [f3*x*(x+z)*z,f3*y,z^3]>;
+Degree(phi1);
+jInvariant(E1);
+lambda := (64*f0 - 20*f1 + 4*f2 - f3 + 16*g0^2 - 8*g0*g1 + g1^2);
+E2<x,y,z> := EllipticCurve([-4*g0 + g1, 48*f0 - 9*f1 + f2 + 8*g0^2 - 2*g0*g1,-g0*lambda, (12*f0 - f1 + g0^2)*lambda, f0*lambda^2]);
+phi2 := map<GenV4->E2 | [-lambda*x*(x + z)*(2*x + z),lambda*(g1*x^3 + y + 2*g1*x^2*z + g0*x*z^2 + g1*x*z^2 + g0*z^3),(2*x+z)^3]>;
+Degree(phi2);
+
+
 
 
 
@@ -328,42 +345,88 @@ F<x0,x1> := FieldOfFractions(CoordinateRing(P1));
 DefiningEquations(rat);
 [(-(x0 - 5/2*x1)/8)^i*Evaluate(eqsII[i],[(2*x0 - 3*x1)/(-8*x0 + 20*x1),1,1]): i in [1..5]];
 
-// Study of the stratum associated to the curve D6
 
+// Study of the stratum associated to the curve D6
 // In characteristic not three
-K := Rationals();
-// K := GF(5);
-P := ProjectiveSpace(K,2);
+
+K<w> := ext<Rationals() | Polynomial([1,1,1])>;
+// K<w> := GF(5,2);
+P := ProjectiveSpace(K,[2,2,2,1,1]);
 F<f0, f1, f2, g0, g1> := CoordinateRing(P);
 GenD6<x,y,z> := HyperellipticCurve(Polynomial([f0, f1, f2, -10*f0 - 5*f1 - 2*f2, 15*f0 + 5*f1 + f2, -6*f0 - f1, f0]),Polynomial([g0, g1, -3*g0 - g1, g0])); 
-
+GenD6alt<x,y,z> := HyperellipticCurve(Polynomial([f0, 0, 0, f1, 0, 0, f2]),Polynomial([g0, 0, 0, g1])); 
 FF<f0, f1, f2, g0, g1>:= BaseRing(GenD6);
-eqsII := [Numerator(i): i in IgusaInvariants(GenD4)];
+eqsII := [Numerator(i): i in IgusaInvariants(GenD6)];
+FF<f0, f1, f2, g0, g1>:= BaseRing(GenD6alt);
+eqsIIalt := [Numerator(i): i in IgusaInvariants(GenD6alt)];
 IP<J2,J4,J6,J8,J10> := ProjectiveSpace(K,[1,2,3,4,5]);
 phi := map<P->IP | eqsII>;
-J := ideal< CoordinateRing(IP) | &cat[ DefiningEquations(Image(phi,P,d)) : d in  [1..15]] >;
+J := ideal< CoordinateRing(IP) | &cat[ DefiningEquations(Image(phi,P,d)) : d in  [1..10]] >;
 MinimalBasis(J);
-D4 := Scheme(IP,MinimalBasis(J));
-IrreducibleComponents(ReducedSubscheme(JacobianSubrankScheme(D4)));
-[<Dimension(C), Degree(C)>: C in IrreducibleComponents(ReducedSubscheme(JacobianSubrankScheme(D4)))];
-sptD4 := D4![120, 330, -320, -36825, 11664];
-IsSingular(sptD4);
-sC := HyperellipticCurveFromIgusaInvariants([120, 330, -320, -36825, 11664]);
-AutomorphismGroupOfHyperellipticCurve(sC);
-P112<h1, h2, h3> := ProjectiveSpace(K,[1,1,2]);
-rat := map<P112->V4 | [h1, h1*h2 + 2*h3, -((2*h1 + h2)*(74*h1^2 + 79*h1*h2 + 20*h2^2 + 4*h3)), -37*h1^4 - 58*h1^3*h2 - 30*h1^2*h2^2 - 5*h1*h2^3 - 2*h1^2*h3 - 2*h1*h2*h3 - h3^2,  (2*h1 + h2)*(11*h1^2 + 12*h1*h2 + 3*h2^2 + h3)^2]>;
+D6 := Scheme(IP,MinimalBasis(J));
+IrreducibleComponents(ReducedSubscheme(JacobianSubrankScheme(D6)));
+[<Dimension(C), Degree(C)>: C in IrreducibleComponents(ReducedSubscheme(JacobianSubrankScheme(D6)))];
+sptD6 := D4![20, 30, -20, -325, 64];
+IsSingular(sptD6);
+sC := HyperellipticCurveFromIgusaInvariants([20, 30, -20, -325, 64]);
+P1<x0, x1> := ProjectiveSpace(K,1);
+rat := map<P1->D6 | [x0, -3*x1*(x0 + 10*x1), -(x1^2*(3*x0 + 40*x1)), -(x1^2*(3*x0^2 + 55*x0*x1 + 225*x1^2)), -(x1^3*(x0 + 12*x1)^2)]>;
 IrreducibleComponents(BaseScheme(rat));
-Pullback(rat, singV4);
-invrat := map<V4->P112 | [J2*(240*J10*J2^3 - 12800*J10*J2*J4 + J2^4*J4^2 - 64*J2^2*J4^3 + 1024*J4^4 - 288000*J10*J6 + 3*J2^5*J6 - 172*J2^3*J4*J6 + 2304*J2*J4^2*J6 + 756*J2^2*J6^2 - 17280*J4*J6^2), 
- -2*(222*J10*J2^4 - 11760*J10*J2^2*J4 - 12800*J10*J4^2 + J2^5*J4^2 - 64*J2^3*J4^3 + 1024*J2*J4^4 - 292800*J10*J2*J6 + 3*J2^6*J6 - 174*J2^4*J4*J6 + 2418*J2^2*J4^2*J6 - 
-   1344*J4^3*J6 + 750*J2^3*J6^2 - 17496*J2*J4*J6^2 + 3240*J6^3), 
- ((240*J10*J2^3 - 12800*J10*J2*J4 + J2^4*J4^2 - 64*J2^2*J4^3 + 1024*J4^4 - 288000*J10*J6 + 3*J2^5*J6 - 172*J2^3*J4*J6 + 2304*J2*J4^2*J6 + 756*J2^2*J6^2 - 17280*J4*J6^2)*
-   (444*J10*J2^5 - 23280*J10*J2^3*J4 - 38400*J10*J2*J4^2 + 2*J2^6*J4^2 - 127*J2^4*J4^3 + 1984*J2^2*J4^4 + 1024*J4^5 - 585600*J10*J2^2*J6 + 6*J2^7*J6 - 288000*J10*J4*J6 - 
-    345*J2^5*J4*J6 + 4664*J2^3*J4^2*J6 - 384*J2*J4^3*J6 + 1500*J2^4*J6^2 - 34236*J2^2*J4*J6^2 - 17280*J4^2*J6^2 + 6480*J2*J6^3))/2]>;
-IrreducibleComponents(BaseScheme(invrat));
+invrat := map<D6->P1 | [J2*(3*J2^2 - 40*J4), -(J2*J4) - 30*J6]>;
+IrreducibleComponents(ReducedSubscheme(BaseScheme(invrat)));
 Expand(rat*invrat);
+F<x0,x1> := FieldOfFractions(CoordinateRing(P1));
+DefiningEquations(rat);
+[(-(x0 + 120*x1)/27)^i*Evaluate(eqsIIalt[i],[(-x0 - 93*x1)/(3*x0 + 360*x1),0,-1,1,1]): i in [1..5]];
+[(x0 + 120*x1)^i*Evaluate(eqsII[i],[(4*x0 + 453*x1)/(81*(x0 + 120*x1)), (2*w*(x0 + 3*w*x0 + 93*x1 + 360*w*x1))/(27*(x0 + 120*x1)), (5*w*(3*x0 + w*x0 + 360*x1 + 93*w*x1))/(27*(x0 + 120*x1)), 0, 1]): i in [1..5]];
 
 
+// In characteristic three
+K<w> := GF(3);
+P := ProjectiveSpace(K,[2,2,2,1,1]);
+F<f0, f1, f2, g0, g1> := CoordinateRing(P);
+GenD6<x,y,z> := HyperellipticCurve(Polynomial([f0, f1, f2, -10*f0 - 5*f1 - 2*f2, 15*f0 + 5*f1 + f2, -6*f0 - f1, f0]),Polynomial([g0, g1, -3*g0 - g1, g0])); 
+FF<f0, f1, f2, g0, g1>:= BaseRing(GenD6);
+eqsII := [Numerator(i): i in IgusaInvariants(GenD6)];
+IP<J2,J4,J6,J8,J10> := ProjectiveSpace(K,[1,2,3,4,5]);
+phi := map<P->IP | eqsII>;
+J := ideal< CoordinateRing(IP) | &cat[ DefiningEquations(Image(phi,P,d)) : d in  [1..10]] >;
+MinimalBasis(J);
+D6 := Scheme(IP,MinimalBasis(J));
+IrreducibleComponents(ReducedSubscheme(JacobianSubrankScheme(D6)));
+P1<x0, x1> := ProjectiveSpace(K,1);
+rat := map<P1->D6 | [x0, -3*x1*(x0 + 10*x1), -(x1^2*(3*x0 + 40*x1)), -(x1^2*(3*x0^2 + 55*x0*x1 + 225*x1^2)), -(x1^3*(x0 + 12*x1)^2)]>;
+IrreducibleComponents(BaseScheme(rat));
+invrat := map<D6->P1 | [J2^3, J6]>;
+IrreducibleComponents(ReducedSubscheme(BaseScheme(invrat)));
+Expand(rat*invrat);
+F<x0,x1> := FieldOfFractions(CoordinateRing(P1));
+DefiningEquations(rat);
+[(x0)^(-i)*Evaluate(eqsII[i],[x1,0,x0-1,0,1]): i in [1..5]];
+
+
+
+// Study of the stratum associated to the curve C2^5
+
+K<zeta5> := ext<GF(2)| Polynomial([1,1,1,1,1])>; 
+P := ProjectiveSpace(K,[2,2,1]);
+F<f3, f5, g0> := CoordinateRing(P);
+GenC25<x,y,z> := HyperellipticCurve(Polynomial([0,0,0,f3,0,f5]),g0); 
+FF<f3, f5, g0>:= BaseRing(GenC25);
+eqsII := [Numerator(i): i in IgusaInvariants(GenC25)];
+IP<J2,J4,J6,J8,J10> := ProjectiveSpace(K,[1,2,3,4,5]);
+phi := map<P->IP | eqsII>;
+J := ideal< CoordinateRing(IP) | &cat[ DefiningEquations(Image(phi,P,d)) : d in  [1..10]] >;
+MinimalBasis(J);
+C25 := Scheme(IP,MinimalBasis(J));
+IrreducibleComponents(ReducedSubscheme(JacobianSubrankScheme(C25)));
+P1<x0, x1> := ProjectiveSpace(K,1);
+rat := map<P1->C25 | [0, 0, 0, x0^4, x1^5]>;
+IrreducibleComponents(BaseScheme(rat));
+invrat := map<C25->P1 | [J8^5, J10^4]>;
+IrreducibleComponents(ReducedSubscheme(BaseScheme(invrat)));
+F<x0,x1> := FieldOfFractions(CoordinateRing(P1));
+DefiningEquations(rat);
 
 
 
@@ -390,10 +453,14 @@ IsIrreducible(AOp);
 IsReduced(AOp);
 IrreducibleComponents(ReducedSubscheme(JacobianSubrankScheme(AOp)));
 
+for p in PrimesInInterval(3,50) do 
+SplittingField(SupersingularPolynomial(p));
+Degree(SupersingularPolynomial(p));
+end for;
 
 //
-for p in PrimesInInterval(3,11) do 
-  K<a>:= GF(p,12);
+for p in PrimesInInterval(19,31) do 
+  K<a>:= GF(p,2);
   Z := Integers();
   P := ProjectiveSpace(K,3); // y^2 = x (x - 1) (f3 x^3 + f2 x^2 + f1 x + f0)
   F<f0, f1, f2, f3> := CoordinateRing(P);
@@ -405,7 +472,6 @@ for p in PrimesInInterval(3,11) do
   n := ((p-1)/2);
   pow := f^(Z!n);
   HWmat := Matrix([[Coefficient(pow, p-1), Coefficient(pow, 2*p-1)],[Coefficient(pow, p-2),Coefficient(pow, 2*p-2)]]);
-  HWmat;
   prank1 := ReducedSubscheme(Scheme(P, Determinant(HWmat)));
   phi := map<P->IP | eqsII>;
   J := ideal< CoordinateRing(IP) | &cat[ DefiningEquations(Image(phi,prank1,d)) : d in  [1..(p-1)/2]] >;
@@ -416,12 +482,14 @@ for p in PrimesInInterval(3,11) do
   printf "Reduced p-rank 1 strata?: %o\n", IsReduced(AOp);
   printf "Number of singular points: %o\n", #IrreducibleComponents(ReducedSubscheme(JacobianSubrankScheme(AOp)));
   AOp;
-  // printf "Number of components of the intersection with C2xC2 strata: %o\n\n", #IrreducibleComponents(ReducedSubscheme(Int1V4));
+  // IrreducibleComponents(ReducedSubscheme(Int1V4));
+  printf "Number of components of the intersection with C2xC2 strata: %o\n\n", #IrreducibleComponents(ReducedSubscheme(Int1V4));
+  Degree(SupersingularPolynomial(p));
 end for;
 
 
 
-p := 3;
+p := 5;
 K<a>:= GF(p,2);
 Z := Integers();
 P := ProjectiveSpace(K,3); // y^2 = x (x - 1) (f3 x^3 + f2 x^2 + f1 x + f0)
@@ -504,7 +572,7 @@ V4 := Scheme(IP,MinimalBasis(J));
 DefiningEquations(V4);
 
 K := Rationals();
-K := GF(3);
+// K := GF(3);
 P := ProjectiveSpace(K,[2,2,2,2,1,1]);
 F<f0, f1, f2, f3, g0, g1> := CoordinateRing(P);
 GenV4<x,y,z> := HyperellipticCurve(Polynomial([f0, f1, f2, -2*f1 + 2*f2 + f3, -f1 + f2 + 3*f3, 3*f3, f3]),Polynomial([g0, g1, g1]));
