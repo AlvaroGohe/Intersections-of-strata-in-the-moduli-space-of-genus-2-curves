@@ -204,7 +204,7 @@ M2!IgusaInvariants(CG);
 
 K := Rationals();
 p := 23;
-K := GF(5);
+//K := GF(p);
 P := ProjectiveSpace(K,[2,2,2,2,1,1]);
 F<f0, f1, f2, f3, g0, g1> := CoordinateRing(P);
 // GenV4<x,y,z> := HyperellipticCurve(Polynomial([f0, f1, f2, -2*f1 + 2*f2 + f3, -f1 + f2 + 3*f3, 3*f3, f3]),Polynomial([g0, g1, g1]));
@@ -216,11 +216,11 @@ phi := map<P->IP | eqsII>;
 J := ideal< CoordinateRing(IP) | &cat[ DefiningEquations(Image(phi,P,d)) : d in  [1..15]] >;
 MinimalBasis(J);
 V4 := Scheme(IP,MinimalBasis(J));
-IrreducibleComponents(ReducedSubscheme(JacobianSubrankScheme(V4)));
-[Dimension(C): C in IrreducibleComponents(ReducedSubscheme(JacobianSubrankScheme(V4)))];
-[ArithmeticGenus(C): C in IrreducibleComponents(ReducedSubscheme(JacobianSubrankScheme(V4)))];
-[IsSingular(C): C in IrreducibleComponents(ReducedSubscheme(JacobianSubrankScheme(V4)))];
-singV4 := ReducedSubscheme(JacobianSubrankScheme(V4));
+// singV4 := ReducedSubscheme(JacobianSubrankScheme(V4));
+// IrreducibleComponents(singV));
+// [Dimension(C): C in IrreducibleComponents(singV4))];
+// [ArithmeticGenus(C): C in IrreducibleComponents(singV4))];
+// [IsSingular(C): C in IrreducibleComponents(singV4))];
 P112<h1, h2, h3> := ProjectiveSpace(K,[1,1,2]);
 rat := map<P112->V4 | [h1, h1*h2 + 2*h3, -((2*h1 + h2)*(74*h1^2 + 79*h1*h2 + 20*h2^2 + 4*h3)), -37*h1^4 - 58*h1^3*h2 - 30*h1^2*h2^2 - 5*h1*h2^3 - 2*h1^2*h3 - 2*h1*h2*h3 - h3^2,  (2*h1 + h2)*(11*h1^2 + 12*h1*h2 + 3*h2^2 + h3)^2]>;
 IrreducibleComponents(BaseScheme(rat));
@@ -234,10 +234,15 @@ invrat := map<V4->P112 | [J2*(240*J10*J2^3 - 12800*J10*J2*J4 + J2^4*J4^2 - 64*J2
 IrreducibleComponents(BaseScheme(invrat));
 Expand(rat*invrat);
 
+
+K := Rationals();
+P := ProjectiveSpace(K,[2,2,2,2,1,1]);
 F<f0, f1, f2, f3, g0, g1> := CoordinateRing(P);
 GenV4<x,y,z> := HyperellipticCurve(Polynomial([f0, f1, f2, -2*f1 + 2*f2 + f3, -f1 + f2 + 3*f3, 3*f3, f3]),Polynomial([g0, g1, g1]));
 FF<f0, f1, f2, f3, g0, g1> := BaseRing(GenV4);
 eqsII := [Numerator(i): i in IgusaInvariants(GenV4)[[1,2,3,4,5]]];
+IP<J2,J4,J6,J8,J10> := ProjectiveSpace(K,[1,2,3,4,5]);
+phi := map<P->IP | eqsII>;
 Factorisation(Numerator(Discriminant(GenV4)));
 [Factorisation(eqs): eqs in eqsII];
 E1<x,y,z> := EllipticCurve([g1, -f1 + f2, f3*g0, f1*f3, f0*f3^2]);
@@ -246,11 +251,25 @@ P2<x,y,z> := ProjectiveSpace(FF,2);
 phi1 := map<GenV4->E1 | [f3*x*(x+z)*z,f3*y,z^3]>;
 Degree(phi1);
 jInvariant(E1);
+Factorisation(Denominator(jInvariant(E1)));
 lambda := (64*f0 - 20*f1 + 4*f2 - f3 + 16*g0^2 - 8*g0*g1 + g1^2);
 E2<x,y,z> := EllipticCurve([-4*g0 + g1, 48*f0 - 9*f1 + f2 + 8*g0^2 - 2*g0*g1,-g0*lambda, (12*f0 - f1 + g0^2)*lambda, f0*lambda^2]);
 phi2 := map<GenV4->E2 | [-lambda*x*(x + z)*(2*x + z),lambda*(g1*x^3 + y + 2*g1*x^2*z + g0*x*z^2 + g1*x*z^2 + g0*z^3),(2*x+z)^3]>;
 Degree(phi2);
-
+jInvariant(E2);
+numdif := Factorisation(Evaluate(Numerator(jInvariant(E1)-jInvariant(E2))),);
+Factorisation(Numerator(Discriminant(GenV4)));
+Factorisation(Denominator(jInvariant(E1)));
+Factorisation(Denominator(jInvariant(E2)));
+num1 := Scheme(P,numdif[1,1]);
+J := ideal< CoordinateRing(IP) | &cat[ DefiningEquations(Image(phi,num1,d)) : d in  [1..6]] >;
+MinimalBasis(J);
+Z := Scheme(IP,MinimalBasis(J));
+num2 := Scheme(P,numdif[2,1]);
+J := ideal< CoordinateRing(IP) | &cat[ DefiningEquations(Image(phi,num2,d)) : d in  [1..6]] >;
+MinimalBasis(J);
+D4 := Scheme(IP,MinimalBasis(J));
+IrreducibleComponents(ReducedSubscheme(Intersection(Z,D4)));
 
 
 
@@ -458,8 +477,19 @@ SplittingField(SupersingularPolynomial(p));
 Degree(SupersingularPolynomial(p));
 end for;
 
+// Make sure that we have defined the HW Matrix correctly as in Achter and Howe
+K<a> := ext<GF(5) | Polynomial([3,3,0,1])>;
+f<x> := Polynomial([0, a^(56), a^(18), a^(92), 1, 1]);
+p := 5;
+n := ((p-1)/2);
+Z := Integers();
+pow := f^(Z!n);
+HWmat := Matrix([[Coefficient(pow, p-1), Coefficient(pow, 2*p-1)],[Coefficient(pow, p-2),Coefficient(pow, 2*p-2)]]);
+HWmatfr := Matrix([[Coefficient(pow, p-1)^p, Coefficient(pow, 2*p-1)^p],[Coefficient(pow, p-2)^p,Coefficient(pow, 2*p-2)^p]]);
+rankmat := HWmat*HWmatfr;
+
 //
-for p in PrimesInInterval(19,31) do 
+for p in PrimesInInterval(3,13) do 
   K<a>:= GF(p,2);
   Z := Integers();
   P := ProjectiveSpace(K,3); // y^2 = x (x - 1) (f3 x^3 + f2 x^2 + f1 x + f0)
@@ -514,7 +544,10 @@ Int1V4 := Scheme(AOp, J2^4*J4^4*J6 - 64*J2^2*J4^5*J6 + 1024*J4^6*J6 - 2*J2^5*J4^
 #IrreducibleComponents(ReducedSubscheme(Int1V4));
 
 
-p := 3;
+
+
+
+p := 5;
 K<a>:= GF(p,2);
 Z := Integers();
 P := ProjectiveSpace(K,3); // y^2 = x (x - 1) (f3 x^3 + f2 x^2 + f1 x + f0)
@@ -532,11 +565,13 @@ rankmat := HWmat*HWmatfr;
 P4<a,b,c,d> := ProjectiveSpace(K,4);
 dummat := Matrix([[a,b],[c,d]])*Matrix([[a^p,b^p],[c^p,d^p]]);
 MinimalBasis(ReducedSubscheme(Scheme(P4,[dummat[1,1],dummat[2,2],dummat[1,2],dummat[2,1],Determinant(dummat)])));
-prank0 := Scheme(P, [rankmat[1,1],rankmat[2,1], Determinant(HWmat)]);
-// [Dimension(IC): IC in IrreducibleComponents(prank0)];
+prank0 := Scheme(P, [rankmat[1,1],rankmat[2,1], rankmat[1,2], rankmat[2,2]]);
+prank0IC := IrreducibleComponents(ReducedSubscheme(prank0));
+anumber2 := Scheme(P, [HWmat[1,1], HWmat[1,2], HWmat[2,1], HWmat[2,2]]);
+anumber2IC := IrreducibleComponents(ReducedSubscheme(anumber2));
 phi := map<P->IP | eqsII>;
-J := ideal< CoordinateRing(IP) | &cat[ DefiningEquations(Image(phi, prank0,d)) : d in  [1..2*p+1]] >;
-SSp := Scheme(IP,MinimalBasis(J));
+J := [ideal< CoordinateRing(IP) | &cat[ DefiningEquations(Image(phi, ic,d)) : d in  [1..15]]>: ic in prank0IC];
+SSp := [Scheme(IP,MinimalBasis(j)):j in J];
 SSp;
 IsIrreducible(SSp);
 IrreducibleComponents(SSp);
@@ -594,15 +629,30 @@ jInvariant(E2);
 Factorisation(Numerator(Evaluate(jInvariant(E1)+jInvariant(E2),[f0,f3,0,f3,0,g1])));
 [Factorisation(Numerator(Evaluate(i,[f0,f3,0,f3,0,g1]))): i  in eqsII];
 [Numerator(Evaluate(i,[f0,f3,0,f3,0,g1])): i  in eqsII];
-Factorisation(Numerator(jInvariant(E1)+jInvariant(E2)));
-Factorisation(Denominator(jInvariant(E1)+jInvariant(E2)));
 Factorisation(Numerator(jInvariant(E1)-jInvariant(E2)));
 
-Factorisation(eqsII[2]^3*eqsII[5])
-Factorisation(Numerator(jInvariant(E1)*jInvariant(E2)));
-Factorisation(Denominator(jInvariant(E1)*jInvariant(E2)));
 
+K := Rationals();
+// K := GF(3);
+P := ProjectiveSpace(K,3);
+F<l,m,c1,c2> := CoordinateRing(P);
+GenV4<x,y,z> := HyperellipticCurve(Polynomial([-1,0,1])*Polynomial([-l,0,1])*Polynomial([-m,0,1]));
+FF<l,m,c1,c2> := BaseRing(GenV4);
+eqsII := [Numerator(i): i in IgusaInvariants(GenV4)[[1,2,3,4,5]]];
+Factorisation(Numerator(Discriminant(GenV4)));
+[Factorisation(eqs): eqs in eqsII];
+E1<x,y,z> := EllipticCurve(Polynomial([-1,1])*Polynomial([-l,1])*Polynomial([-m,1]));
+phi1 := map<GenV4->E1 | [x^2*z,y,z^3]>;
+E1;
+P2<x,y,z> := ProjectiveSpace(FF,2);
+jInvariant(E1);
+Factorisation(Numerator(jInvariant(E1)));
+Factorisation(Denominator(jInvariant(E1)));
+E2<x,y,z> := EllipticCurve(Polynomial([-1,1])*Polynomial([-1/l,1])*Polynomial([-1/m,1]));
+jInvariant(E2);
+Evaluate(jInvariant(E1),[c1*(c2-1)/(c1-1)/c2,c1/c2,0,0]);
+Evaluate(jInvariant(E2),[c1*(c2-1)/(c1-1)/c2,c1/c2,0,0]);
+Factorisation(Numerator(jInvariant(E2)));
+Factorisation(Denominator(jInvariant(E2)));
+Factorisation(Numerator(Evaluate(Discriminant(GenV4),[c1*(c2-1)/(c1-1)/c2,c1/c2,0,0])));
 
-
-Factorisation(Numerator(jInvariant(E1)*jInvariant(E2)));
-Factorisation(Denominator(jInvariant(E1)*jInvariant(E2)));
