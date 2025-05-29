@@ -489,8 +489,8 @@ HWmatfr := Matrix([[Coefficient(pow, p-1)^p, Coefficient(pow, 2*p-1)^p],[Coeffic
 rankmat := HWmat*HWmatfr;
 
 //
-for p in PrimesInInterval(3,13) do 
-  K<a>:= GF(p,2);
+for p in PrimesInInterval(3,23) do 
+  K<a>:= GF(p,20);
   Z := Integers();
   P := ProjectiveSpace(K,3); // y^2 = x (x - 1) (f3 x^3 + f2 x^2 + f1 x + f0)
   F<f0, f1, f2, f3> := CoordinateRing(P);
@@ -639,6 +639,7 @@ F<l,m,c1,c2> := CoordinateRing(P);
 GenV4<x,y,z> := HyperellipticCurve(Polynomial([-1,0,1])*Polynomial([-l,0,1])*Polynomial([-m,0,1]));
 FF<l,m,c1,c2> := BaseRing(GenV4);
 eqsII := [Numerator(i): i in IgusaInvariants(GenV4)[[1,2,3,4,5]]];
+GeqsII := [i: i in G2Invariants(GenV4)];
 Factorisation(Numerator(Discriminant(GenV4)));
 [Factorisation(eqs): eqs in eqsII];
 E1<x,y,z> := EllipticCurve(Polynomial([-1,1])*Polynomial([-l,1])*Polynomial([-m,1]));
@@ -651,8 +652,22 @@ Factorisation(Denominator(jInvariant(E1)));
 E2<x,y,z> := EllipticCurve(Polynomial([-1,1])*Polynomial([-1/l,1])*Polynomial([-1/m,1]));
 jInvariant(E2);
 Evaluate(jInvariant(E1),[c1*(c2-1)/(c1-1)/c2,c1/c2,0,0]);
+Evaluate(jInvariant(E1),[0,c1,0,0]);
+Evaluate(jInvariant(E1),[-((-1 + c2)/((-1 + c1)*c2)), 1/(c1*c2),0,0]);
 Evaluate(jInvariant(E2),[c1*(c2-1)/(c1-1)/c2,c1/c2,0,0]);
+Evaluate(jInvariant(E2),[-((-1 + c2)/((-1 + c1)*c2)), 1/(c1*c2),0,0]);
 Factorisation(Numerator(jInvariant(E2)));
 Factorisation(Denominator(jInvariant(E2)));
 Factorisation(Numerator(Evaluate(Discriminant(GenV4),[c1*(c2-1)/(c1-1)/c2,c1/c2,0,0])));
+eqsor := [Evaluate(eqsII[i]/eqsII[1]^i, [c1*(c2-1)/(c1-1)/c2,c1/c2,0,0]): i in [1..5]];
+eqsoreqs := [Evaluate(eqsII[i]/eqsII[1]^i, [-((-1 + c2)/((-1 + c1)*c2)), 1/(c1*c2),0,0]): i in [1..5]];
+[Evaluate(eqq, [-((-1 + c2)/((-1 + c1)*c2)), 1/(c1*c2),0,0]): eqq in GeqsII];
+[Evaluate(eqq, [c1*(c2-1)/(c1-1)/c2,c1/c2,0,0]): eqq in GeqsII];
+
+
+newGenV4<x,y,z> := HyperellipticCurve(Polynomial([-1,0,1])*Polynomial([-l,0,1])*Polynomial([-m,0,1]),Polynomial([c1,c2,c2,c1]));
+
+C1<x,y,z> := HyperellipticCurve(Polynomial([-1,0,1])*Polynomial([-56/135,0,1])*Polynomial([14/65,0,1]));
+C2<x,y,z> := HyperellipticCurve(Polynomial([-1,0,1])*Polynomial([-52/135,0,1])*Polynomial([13/70,0,1]));
+IsIsomorphicHyperellipticCurves(C1,C2: geometric := true);
 
