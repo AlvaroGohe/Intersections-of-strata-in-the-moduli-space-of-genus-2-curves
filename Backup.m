@@ -231,7 +231,7 @@ invrat := map<V4->P112 | [J2*(240*J10*J2^3 - 12800*J10*J2*J4 + J2^4*J4^2 - 64*J2
  ((240*J10*J2^3 - 12800*J10*J2*J4 + J2^4*J4^2 - 64*J2^2*J4^3 + 1024*J4^4 - 288000*J10*J6 + 3*J2^5*J6 - 172*J2^3*J4*J6 + 2304*J2*J4^2*J6 + 756*J2^2*J6^2 - 17280*J4*J6^2)*
    (444*J10*J2^5 - 23280*J10*J2^3*J4 - 38400*J10*J2*J4^2 + 2*J2^6*J4^2 - 127*J2^4*J4^3 + 1984*J2^2*J4^4 + 1024*J4^5 - 585600*J10*J2^2*J6 + 6*J2^7*J6 - 288000*J10*J4*J6 - 
     345*J2^5*J4*J6 + 4664*J2^3*J4^2*J6 - 384*J2*J4^3*J6 + 1500*J2^4*J6^2 - 34236*J2^2*J4*J6^2 - 17280*J4^2*J6^2 + 6480*J2*J6^3))/2]>;
-IrreducibleComponents(BaseScheme(invrat));
+// IrreducibleComponents(BaseScheme(invrat));
 Expand(rat*invrat);
 
 
@@ -651,6 +651,15 @@ Factorisation(Numerator(jInvariant(E1)));
 Factorisation(Denominator(jInvariant(E1)));
 E2<x,y,z> := EllipticCurve(Polynomial([-1,1])*Polynomial([-1/l,1])*Polynomial([-1/m,1]));
 jInvariant(E2);
+GenlV4<x,y,z> := HyperellipticCurve(Polynomial([-1,0,1])*Polynomial([-c1/c2,0,1])*Polynomial([-c1*(c2-1)/(c2*(c1-1)),0,1]));
+El1<x,y,z> := EllipticCurve(Polynomial([0, c1*((c1 - c2)/(-1 + c1)*c2)^2, -(1 + c1)*((c1 - c2)/(-1 + c1)*c2), 1])); // A further change of variables involving 
+phi1 := map<GenlV4->El1 | [x^2*z - ((-c1 + c1*c2)*z^3)/((-1 + c1)*c2), y, z^3]>;
+
+El1<x,y,z> := EllipticCurve(Polynomial([0, c1*((c1 - c2)/(-1 + c1)*c2)^2, -(1 + c1)*((c1 - c2)/(-1 + c1)*c2), 1])); // A further change of variables involving 
+phi2 := map<GenlV4->P2 | [x*z^2,y,x^3]>;
+
+
+
 Evaluate(jInvariant(E1),[c1*(c2-1)/(c1-1)/c2,c1/c2,0,0]);
 Evaluate(jInvariant(E1),[0,c1,0,0]);
 Evaluate(jInvariant(E1),[-((-1 + c2)/((-1 + c1)*c2)), 1/(c1*c2),0,0]);
@@ -659,10 +668,16 @@ Evaluate(jInvariant(E2),[-((-1 + c2)/((-1 + c1)*c2)), 1/(c1*c2),0,0]);
 Factorisation(Numerator(jInvariant(E2)));
 Factorisation(Denominator(jInvariant(E2)));
 Factorisation(Numerator(Evaluate(Discriminant(GenV4),[c1*(c2-1)/(c1-1)/c2,c1/c2,0,0])));
-eqsor := [Evaluate(eqsII[i]/eqsII[1]^i, [c1*(c2-1)/(c1-1)/c2,c1/c2,0,0]): i in [1..5]];
-eqsoreqs := [Evaluate(eqsII[i]/eqsII[1]^i, [-((-1 + c2)/((-1 + c1)*c2)), 1/(c1*c2),0,0]): i in [1..5]];
-[Evaluate(eqq, [-((-1 + c2)/((-1 + c1)*c2)), 1/(c1*c2),0,0]): eqq in GeqsII];
-[Evaluate(eqq, [c1*(c2-1)/(c1-1)/c2,c1/c2,0,0]): eqq in GeqsII];
+Factorisation(Numerator(Evaluate(Discriminant(GenV4),[(-1 + c2)/(-1 + c1), c2/c1, 0, 0])));
+eqs1 := [Evaluate(eqsII[i]/eqsII[1]^i, [c1*(c2-1)/(c1-1)/c2,c1/c2,0,0]): i in [1..5]];
+eqs2 := [Evaluate(eqsII[i]/eqsII[1]^i, [-((-1 + c2)/((-1 + c1)*c2)), 1/(c1*c2),0,0]): i in [1..5]];
+eqs3 := [Evaluate(eqsII[i]/eqsII[1]^i, [(-1 + c2)/(-1 + c1), c2/c1, 0, 0]): i in [1..5]];
+
+[Evaluate(eqsII[i]/eqsII[1]^i, [-c1, c1^2, 0, 0]): i in [1..5]]; // 
+[Evaluate(eqsII[i], [-c1, c1^2, 0, 0]): i in [1..5]]; //  Corresponds to Z
+[Evaluate(eqsII[i]/eqsII[1]^i, [c1^2/(-1 + c1), -((-1 + c1)*c1), 0, 0]): i in [1..5]];
+[Evaluate(eqsII[i], [c1^2/(-1 + c1), -((-1 + c1)*c1), 0, 0]): i in [1..5]]; // Corresponds to D4
+
 
 
 newGenV4<x,y,z> := HyperellipticCurve(Polynomial([-1,0,1])*Polynomial([-l,0,1])*Polynomial([-m,0,1]),Polynomial([c1,c2,c2,c1]));
@@ -671,3 +686,24 @@ C1<x,y,z> := HyperellipticCurve(Polynomial([-1,0,1])*Polynomial([-56/135,0,1])*P
 C2<x,y,z> := HyperellipticCurve(Polynomial([-1,0,1])*Polynomial([-52/135,0,1])*Polynomial([13/70,0,1]));
 IsIsomorphicHyperellipticCurves(C1,C2: geometric := true);
 
+K := Rationals();
+// K := GF(3);
+P := ProjectiveSpace(K,1);
+F<l,m> := CoordinateRing(P);
+F := Rationals();
+P11<x0,x1,y0,y1>:= ProductProjectiveSpace(F,[1,1]);
+P3<z0,z1,z2,z3> := ProjectiveSpace(F,3);
+phi := map<P11->P3 | [(2*x0*y0 - x1*y0 - x0*y1 + 2*x1*y1)^4, (x0^2 - x0*x1 + x1^2)*(2*x0*y0 - x1*y0 - x0*y1 + 2*x1*y1)^2*(y0^2 - y0*y1 + y1^2), (x0^2 - x0*x1 + x1^2)^2*(y0^2 - y0*y1 + y1^2)^2,  (x0*y0 + x1*y0 + x0*y1 - 2*x1*y1)*(2*x0*y0 - x1*y0 - x0*y1 - x1*y1)*(x0*y0 - 2*x1*y0 - 2*x0*y1 + x1*y1)*(2*x0*y0 - x1*y0 - x0*y1 + 2*x1*y1)]>;
+
+K := Rationals();
+P11<x0,x1,y0,y1>:= ProductProjectiveSpace(K,[1,1]);
+P2<z0,z1,z2> := ProjectiveSpace(K,3);
+symphi := map<P11->P2 | [x0*y0,x1*y0+x0*y1,x1*y1]>;
+
+P<x, y, z> := PolynomialRing(K, 3);
+M1 := Matrix(K, 3, 3, [1, -1, 1, 2, -1, 0, 1, 0, 0]);
+G := sub<GL(3, K) | M1>;
+R := InvariantRing(G);
+prim := PrimaryInvariants(R);
+prim;
+sec;
