@@ -1,110 +1,45 @@
-F<f0, f1, f2, f3, f4, f5, f6, g0, g1, g2, g3> :=PolynomialRing(GF(2),11);
-GenC := HyperellipticCurve(Polynomial([f0, f1, f2, f3, f4, f5, f6]),Polynomial([g0, g1, g2, g3]));
-GenC;
-K<f0, f1, f2, f3, f4, f5, f6, g0, g1, g2, g3> :=BaseField(GenC);
-IgusaInvariants(GenC);
-F<f0, f1, f2, f3, f4, f5> :=PolynomialRing(GF(2),6);
-GenC := HyperellipticCurve(Polynomial([f0, f1, f2, f3, f4, f5, 1]),Polynomial([0, 0, f1*0, 1]));
-GenC;
-K<f0, f1, f2, f3, f4, f5> :=BaseField(GenC);
-IgusaInvariants(GenC);
-F<f0, f1, f2, f3, f4, f5> :=PolynomialRing(GF(2),6);
-GenC := HyperellipticCurve(Polynomial([f0, f1, f2, f3, f4, f5, 1]),Polynomial([0, f1*0, 1, 1]));
-GenC;
-K<f0, f1, f2, f3, f4, f5> :=BaseField(GenC);
-IgusaInvariants(GenC);
+// This is code accompanying the paper "Intersections of the automorphism and the Ekedahl-Oort strata inside of M_2".
 
-F<f0, f1, f2, f3, f4, f5> := PolynomialRing(GF(3),6);
-GenC := HyperellipticCurve(Polynomial([f0, (f2*f4)/f5, f2, f3, f4, f5, 1]));
-GenC;
-K<f0, f1, f2, f3, f4, f5> :=BaseField(GenC);
-IgusaInvariants(GenC);
-
-F<f1, f2, f3, f4, f5, f6> := PolynomialRing(GF(5),6);
-GenC := HyperellipticCurve(Polynomial([(2*(3*f2^2*f4^2 + f1*f3*f4^2 + f2^2*f3*f5 + 2*f1*f3^2*f5 + 3*f1*f2*f4*f5 + f2^3*f6))/(3*f4^3 + 4*f3^2*f6 + f2*f4*f6), f1, f2, f3, f4, f5, f6]));
-GenC;
-K<f1, f2, f3, f4, f5, f6> :=BaseField(GenC);
-IgusaInvariants(GenC);
+// If you find any bug or mistake, or if you have any question, please don't hesitate in contacting me :)
+// email: alvaro.gohe@gmail.com
 
 
 
+// The description of the Igusa invariants for a general genus two curve in the form y^2=f(x).
 Q0 := Rationals();
 K<f0,f1,f2,f3,f4,f5,f6>:= PolynomialRing(Rationals(),7);
 GenC := HyperellipticCurve([f0,f1,f2,f3,f4,f5,f6]);
 K<f0,f1,f2,f3,f4,f5,f6>:= BaseField(GenC);
 II := IgusaInvariants(GenC);
 P<f0,f1,f2,f3,f4,f5,f6>:=ProjectiveSpace(Q0,6);
-IP<J2,J4,J6,J8,J10> := ProjectiveSpace(Q0,[1,2,3,4,5]);
+IP<J2,J4,J6,J8,J10> := ProjectiveSpace(Q0,[1,2,3,4,5]); // This is the weighted projective space with weights [1,2,3,4,5].
 eqsII := [Numerator(i): i in IgusaInvariants(GenC)];
-phi := map<P->IP | eqsII>;
+[Factorisation(pol): pol in eqsII];
+phi := map<P->IP | eqsII>; // We construct the map from the space of 7 variables fi to P(1,2,3,4,5) given by the Igusa invariants.
 J := ideal< CoordinateRing(IP) | &cat[ DefiningEquations(Image(phi,P,d)) : d in  [1..6]] >;
-MinimalBasis(J);
+MinimalBasis(J); // We can check there is a relation between the elements, namely -J4^2 + J2*J6 - 4*J8=0.
 M2 := Scheme(IP,-J4^2 + J2*J6 - 4*J8);
 JacobianSubrankScheme(M2);
 
 
-
-K<f0,f1,f2,g0,g1>:= PolynomialRing(Rationals(),5);
-GenC := C3Curve(K,[f0,f1,f2,g0,g1]);
-K<f0,f1,f2,g0,g1>:= BaseRing(GenC);
-II := IgusaInvariants(GenC);
-Q0 := Rationals();
-P<g0,g1,f0,f1,f2>:=ProjectiveSpace(Q0,[1,1,2,2,2]);
-IP<J2,J4,J6,J8,J10> := ProjectiveSpace(Q0,[1,2,3,4,5]);
-IP<J10,J8,J6,J4,J2> := ProjectiveSpace(Q0,[5,4,3,2,1]);
-eqsII := [Numerator(i): i in IgusaInvariants(C)];
-phi := map<P->IP | eqsII>;
-J := ideal< CoordinateRing(IP) | &cat[ DefiningEquations(Image(phi,P,d)) : d in  [1..6]] >;
-D6 := Scheme(IP,MinimalBasis(J));
-Ipproj<J2,J4,J6> := ProjectiveSpace(Q0,[1,2,3]);
-proj := map<D6 -> Ipproj|[J2,J4,J6]>;
-D6c := Image(proj);
-
-Q0 := GF(5);
-P<g0,g1,f0,f1,f2>:=ProjectiveSpace(Q0,[1,1,2,2,2]);
-IP<J2,J4,J6,J8,J10> := ProjectiveSpace(Q0,[1,2,3,4,5]);
-phi := map<P->IP | eqsII>;
-J := ideal< CoordinateRing(IP) | &cat[ DefiningEquations(Image(phi,P,d)) : d in  [1..6]] >;
-D6 := Scheme(IP,MinimalBasis(J));
-IrreducibleComponents(ReducedSubscheme(JacobianSubrankScheme(D6)));
-
-
-
-Q0 := GF(2);
-IP<J2,J4,J6,J8,J10> := ProjectiveSpace(Q0,[1,2,3,4,5]);
-S := Scheme(IP,[J4^2 + J2*J6, J4*J6 + J10, J2^3*J6 + J4^3 + J2^2*J8 + J6^2]);
-IsSingular(S);
-
-Q3<t> := PolynomialRing(GF(3));
-PolQ3<x> := PolynomialRing(Q3);
-C := HyperellipticCurve((x^3-x)*(x^3-x-t));
-Q3<t> := BaseRing(C);
-IgusaInvariants(C);
-
-[Factorisation(pol): pol in II];
-  
-
-// Create a polynomial ring over the rationals with six variables ai
+// This is the comparison with the invariants of a curve written as y^2 equal the polymomial with six roots ai.
+// Create a polynomial ring over the rationals with six variables ai.
 F<a1, a2, a3, a4, a5, a6> := PolynomialRing(Rationals(),6);
 PolF<x> := PolynomialRing(F);
 C := HyperellipticCurve((x-a1)*(x-a2)*(x-a3)*(x-a4)*(x-a5)*(x-a6));
 F<a1, a2, a3, a4, a5, a6> := BaseField(C);
 II := IgusaInvariants(C);
-Write("Igusa_invariants.txt", II);
-// Prepare the string with variable names and values
+Write("Igusa_invariants.txt", II); // As we are interested in saving these on a text file, we prepare a string with variable names and values.
 output := "Igusa Invariants:\n";
 for i in [1..#II] do
     output cat:= Sprintf("II[%o] = %o\n", i, II[i]);
 end for;
+Write("Igusa_Invariants.txt", output); // Save the output to a text file.
+ 
 
-// Save the output to a text file
-Write("Igusa_Invariants.txt", output);
+// Let us start by describing the curves with big automorphism group:
 
-
-IP<J2,J4,J6,J8,J10> := ProjectiveSpace(Q0,[1,2,3,4,5]);
-M2 := Scheme(IP, )
-
-// The curve with automorphism group C10
+// The curve with automorphism group C10.
 K := CyclotomicField(5);
 P<x> := PolynomialRing(K);
 CC10 := HyperellipticCurve(x^5,1);
@@ -113,22 +48,22 @@ GroupName(G);
 aut(G.5);
 M2!IgusaInvariants(CC10);
 
-// The curve with automorphism group GL(2,3)
+// The curve with automorphism group GL(2,3).
 K<zeta8> := CyclotomicField(8);
 P<x> := PolynomialRing(K);
 CG<X,Y,Z> := HyperellipticCurve(x^5-x);
 G, aut := AutomorphismGroup(CG);
 GroupName(G);
-// We are going to find an explicit isomorphism between GL(2,3) and the automorphism group of the hyperelliptic curve
-// In order to do this, we need to find possibles elements of orders 2 and 3 in the automorphism group that can be the images of the generators of GL(2,3)
+// We are going to find an explicit isomorphism between GL(2,3) and the automorphism group of the hyperelliptic curve.
+// In order to do this, we need to find possibles elements of orders 2 and 3 in the automorphism group that can be the images of the generators of GL(2,3).
 [Order(g): g in G];
 [aut(g): g in G | Order(g) eq 2];
 beta2 := [g: g in G | Order(g) eq 2][2];
 [aut(g): g in G | Order(g) eq 3];
 beta3 := [g: g in G | Order(g) eq 3][1];
 GL23 := GL(2, GF(3));
-phi := hom< GL23 -> G | [beta2, beta3]>; // This is the explicit isomorphism
-GroupName(Image(phi)); // We can check that the image of the map is the whole group
+phi := hom< GL23 -> G | [beta2, beta3]>; // This is the explicit isomorphism.
+GroupName(Image(phi)); // We can check that the image of the map is the whole group.
 aut(phi(Matrix([[1,1],[0,1]])));
 aut(phi(Matrix([[1,0],[1,1]])));
 aut(phi(Matrix([[-1,0],[0,1]])));
@@ -136,23 +71,21 @@ M2!IgusaInvariants(CG);
 DifferentialSpace(Divisor(X));
 <aut(beta2)(X),aut(beta2)(Y)>;
 
-
-
-// The curve with automorphism group C3:D4
+// The curve with automorphism group C3:D4.
 K := CyclotomicField(6);
 P<x> := PolynomialRing(K);
 // CG<X,Y,Z> := HyperellipticCurve(x^6,2);
 CG<X,Y,Z> := HyperellipticCurve(x^6+1);
 G, aut := AutomorphismGroup(CG);
 GroupName(G);
-iota := G.(-5);
+iota := G.(-5); // We have manually identified the generators of the group.
 tau2 := G.2;
 tau6 := G.(-10);
 gens := [aut(G.(-5)),aut(G.2),aut(G.(-10))];
-[iota^2, tau2^2, tau6^6, (iota,tau2), (tau2,tau6), tau6^iota/tau6^5/tau2];
+[iota^2, tau2^2, tau6^6, (iota,tau2), (tau2,tau6), tau6^iota/tau6^5/tau2]; // This is a check that the generators we have selected match the presentation of the group that can be found in LMFDB.
 M2!IgusaInvariants(CG);
 
-// The curve with automorphism group C2 wr C5
+// The curve with automorphism group C2 wr C5.
 K<zeta5> := ext<GF(2)| Polynomial([1,1,1,1,1])>; 
 P<x> := PolynomialRing(K);
 CG := HyperellipticCurve(x^5,1);
@@ -162,52 +95,52 @@ GroupName(G);
 aut(G.5);
 M2!IgusaInvariants(CG);
 
-
-// The curve with automorphism group SL(2,5)
+// The curve with automorphism group SL(2,5).
 K := GF(5);
 P<x> := PolynomialRing(K);
 CG<X,Y,Z> := HyperellipticCurve(x^5-x);
 G, aut := AutomorphismGroup(CG);
 GroupName(G);
-// We are going to find an explicit isomorphism between SL(2,5) and the automorphism group of the hyperelliptic curve as before
-// We need to find possibles elements of orders 3 and 4 in the automorphism group that can be the images of the generators of SL(2,5)
+// We are going to find an explicit isomorphism between SL(2,5) and the automorphism group of the hyperelliptic curve as before.
+// We need to find possibles elements of orders 3 and 4 in the automorphism group that can be the images of the generators of SL(2,5).
 [Order(g): g in G];
 [aut(g): g in G | Order(g) eq 3];
-beta3 := [g: g in G | Order(g) eq 3][18];
+beta3 := [g: g in G | Order(g) eq 3][18]; // Here, we have also manually identified generators for the group. You can see below how.
 [aut(g): g in G | Order(g) eq 4];
 beta4 := [g: g in G | Order(g) eq 4][22];
 SL25 := SL(2, GF(5));
-phi := hom< SL25 -> G | [beta4, beta3]>; // This is the explicit isomorphism
-GroupName(Image(phi)); // We can check that the image of the map is the whole group
+phi := hom< SL25 -> G | [beta4, beta3]>; // This is the explicit isomorphism.
+GroupName(Image(phi)); // We can check that the image of the map is the whole group.
 aut(phi(Matrix([[1,1],[0,1]])));
 aut(phi(Matrix([[1,0],[1,1]])));
-
 BasisOfHolomorphicDifferentials(CG);
 SheafOfDifferentials(CG);   
+
+// In order to find manually what the generators are, we looped over all elements of order 3 and 4 and see when the elements generated SL(2,5).
 for beta3 in [g: g in G | Order(g) eq 3] do
     for beta4 in [g: g in G | Order(g) eq 4] do
         SL25 := SL(2, GF(5));
-        phi := hom< SL25 -> G | [beta4, beta3]>; // This is the explicit isomorphism
+        phi := hom< SL25 -> G | [beta4, beta3]>; 
         if GroupName(Image(phi)) eq "SL(2,5)" then
-        <beta3,beta4,DefiningEquations(aut(phi(Matrix([[1,1],[0,1]]))))>; // We can check that the image of the map is the whole group
+        <beta3,beta4,DefiningEquations(aut(phi(Matrix([[1,1],[0,1]]))))>; // We can check that the image of the map is the whole group.
         end if;
             end for;
 end for;
-[g: g in G | Order(g) eq 4][23];
 
-M2!IgusaInvariants(CG);
+// We know proceed to study the automorphism strata corresponding to the groups C2xC2, D4, D6 and C2^5.
 
+// The strategy is going to be similar in the first three cases. We first identify an automorphism that allows us to find a model of the curve depending on parameters fi, gj.
+// We create a copy of a weighted projective space with variables fi, gj; where the fi have weight 2 and the gj have weight 1.
+// Then, we define a map from this space to the weighted projective space with weights 1,2,3,4,5 whose equations are given by the Igusa invariants of our model of the curve.
+// The strata that we are looking for is precisely the image under this map.
 
-
-
-// Study of the stratum associated to the curve C2xC2
-
+// Study of the stratum associated to the group C2xC2.
 K := Rationals();
-p := 23;
-//K := GF(p);
+// p := 23;
+// K := GF(p); // Some computations take quite a long time to perform if we are working over the rationals, which is why it is useful to test the code over finite fields (not characteristic two).
 P := ProjectiveSpace(K,[2,2,2,2,1,1]);
 F<f0, f1, f2, f3, g0, g1> := CoordinateRing(P);
-// GenV4<x,y,z> := HyperellipticCurve(Polynomial([f0, f1, f2, -2*f1 + 2*f2 + f3, -f1 + f2 + 3*f3, 3*f3, f3]),Polynomial([g0, g1, g1]));
+// GenV4<x,y,z> := HyperellipticCurve(Polynomial([f0, f1, f2, -2*f1 + 2*f2 + f3, -f1 + f2 + 3*f3, 3*f3, f3]),Polynomial([g0, g1, g1])); This would be the model .
 GenV4<x,y,z> := HyperellipticCurve(Polynomial([f0, 0, 0, f3, 3*f3, 3*f3, f3]),Polynomial([g0, g1, g1]));
 FF<f0, f1, f2, f3, g0, g1> := BaseRing(GenV4);
 eqsII := [Numerator(i): i in IgusaInvariants(GenV4)];
@@ -216,12 +149,14 @@ phi := map<P->IP | eqsII>;
 J := ideal< CoordinateRing(IP) | &cat[ DefiningEquations(Image(phi,P,d)) : d in  [1..15]] >;
 MinimalBasis(J);
 V4 := Scheme(IP,MinimalBasis(J));
-// singV4 := ReducedSubscheme(JacobianSubrankScheme(V4));
+// singV4 := ReducedSubscheme(JacobianSubrankScheme(V4)); // Over the rationals, computing the singular locus takes a long time.
 // IrreducibleComponents(singV));
 // [Dimension(C): C in IrreducibleComponents(singV4))];
 // [ArithmeticGenus(C): C in IrreducibleComponents(singV4))];
 // [IsSingular(C): C in IrreducibleComponents(singV4))];
-P112<h1, h2, h3> := ProjectiveSpace(K,[1,1,2]);
+
+// This is a birational map between our strata and the wps with weights 1, 1 and 2.
+P112<h1, h2, h3> := ProjectiveSpace(K,[1,1,2]); 
 rat := map<P112->V4 | [h1, h1*h2 + 2*h3, -((2*h1 + h2)*(74*h1^2 + 79*h1*h2 + 20*h2^2 + 4*h3)), -37*h1^4 - 58*h1^3*h2 - 30*h1^2*h2^2 - 5*h1*h2^3 - 2*h1^2*h3 - 2*h1*h2*h3 - h3^2,  (2*h1 + h2)*(11*h1^2 + 12*h1*h2 + 3*h2^2 + h3)^2]>;
 IrreducibleComponents(BaseScheme(rat));
 Pullback(rat, singV4);
@@ -234,7 +169,7 @@ invrat := map<V4->P112 | [J2*(240*J10*J2^3 - 12800*J10*J2*J4 + J2^4*J4^2 - 64*J2
 // IrreducibleComponents(BaseScheme(invrat));
 Expand(rat*invrat);
 
-
+// Here we analyse how to construct from genus two curves C with an automorphism group C2xC2, the two elliptic curves that are isogenous to the Jacobian of C.
 K := Rationals();
 P := ProjectiveSpace(K,[2,2,2,2,1,1]);
 F<f0, f1, f2, f3, g0, g1> := CoordinateRing(P);
@@ -245,19 +180,20 @@ IP<J2,J4,J6,J8,J10> := ProjectiveSpace(K,[1,2,3,4,5]);
 phi := map<P->IP | eqsII>;
 Factorisation(Numerator(Discriminant(GenV4)));
 [Factorisation(eqs): eqs in eqsII];
-E1<x,y,z> := EllipticCurve([g1, -f1 + f2, f3*g0, f1*f3, f0*f3^2]);
+E1<x,y,z> := EllipticCurve([g1, -f1 + f2, f3*g0, f1*f3, f0*f3^2]); // This is the first elliptic curve.
 E1;
 P2<x,y,z> := ProjectiveSpace(FF,2);
-phi1 := map<GenV4->E1 | [f3*x*(x+z)*z,f3*y,z^3]>;
+phi1 := map<GenV4->E1 | [f3*x*(x+z)*z,f3*y,z^3]>; // As we mentioned in the paper, this is the quotient map
 Degree(phi1);
 jInvariant(E1);
-Factorisation(Denominator(jInvariant(E1)));
-lambda := (64*f0 - 20*f1 + 4*f2 - f3 + 16*g0^2 - 8*g0*g1 + g1^2);
-E2<x,y,z> := EllipticCurve([-4*g0 + g1, 48*f0 - 9*f1 + f2 + 8*g0^2 - 2*g0*g1,-g0*lambda, (12*f0 - f1 + g0^2)*lambda, f0*lambda^2]);
-phi2 := map<GenV4->E2 | [-lambda*x*(x + z)*(2*x + z),lambda*(g1*x^3 + y + 2*g1*x^2*z + g0*x*z^2 + g1*x*z^2 + g0*z^3),(2*x+z)^3]>;
+Factorisation(Denominator(jInvariant(E1))); // We can compute the j-invariant
+
+lambda := (64*f0 - 20*f1 + 4*f2 - f3 + 16*g0^2 - 8*g0*g1 + g1^2); 
+E2<x,y,z> := EllipticCurve([-4*g0 + g1, 48*f0 - 9*f1 + f2 + 8*g0^2 - 2*g0*g1,-g0*lambda, (12*f0 - f1 + g0^2)*lambda, f0*lambda^2]); // This is the second elliptic curve.
+phi2 := map<GenV4->E2 | [-lambda*x*(x + z)*(2*x + z),lambda*(g1*x^3 + y + 2*g1*x^2*z + g0*x*z^2 + g1*x*z^2 + g0*z^3),(2*x+z)^3]>; // And this is the quotient map
 Degree(phi2);
 jInvariant(E2);
-numdif := Factorisation(Evaluate(Numerator(jInvariant(E1)-jInvariant(E2))),);
+numdif := Factorisation(Numerator(jInvariant(E1)-jInvariant(E2))));
 Factorisation(Numerator(Discriminant(GenV4)));
 Factorisation(Denominator(jInvariant(E1)));
 Factorisation(Denominator(jInvariant(E2)));
