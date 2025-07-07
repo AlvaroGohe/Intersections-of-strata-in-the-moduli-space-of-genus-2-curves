@@ -3,8 +3,10 @@
 // If you find any bug or mistake, or if you have any question, please don't hesitate in contacting me :)
 // email: alvaro.gohe@gmail.com
 
-
+// -----------------------------------------------------------------------------------------------------------
 // INTRODUCTION
+// -----------------------------------------------------------------------------------------------------------
+
 // The description of the Igusa invariants for a general genus two curve in the form y^2=f(x).
 Q0 := Rationals();
 K<f0,f1,f2,f3,f4,f5,f6>:= PolynomialRing(Rationals(),7);
@@ -29,15 +31,16 @@ PolF<x> := PolynomialRing(F);
 C := HyperellipticCurve((x-a1)*(x-a2)*(x-a3)*(x-a4)*(x-a5)*(x-a6));
 F<a1, a2, a3, a4, a5, a6> := BaseField(C);
 II := IgusaInvariants(C);
-Write("Igusa_invariants.txt", II); // As we are interested in saving these on a text file, we prepare a string with variable names and values.
-output := "Igusa Invariants:\n";
+Write("Equations_Igusa_invariants.txt", II); // As we are interested in saving these on a text file, we prepare a string with variable names and values.
 for i in [1..#II] do
-    output cat:= Sprintf("II[%o] = %o\n", i, II[i]);
+    output cat:= Sprintf("%o\n", i, II[i]);
 end for;
-Write("Igusa_Invariants.txt", output); // Save the output to a text file.
+Write("Equations_Invariants.txt", output); // Save the output to a text file.
  
-
+// -----------------------------------------------------------------------------------------------------------
 // PART I: THE AUTOMORPHISM STRATA
+// -----------------------------------------------------------------------------------------------------------
+
 // Let us start by describing the curves with big automorphism group:
 
 // The curve with automorphism group C10.
@@ -47,7 +50,7 @@ CC10 := HyperellipticCurve(x^5,1);
 G, aut := AutomorphismGroup(CC10);
 GroupName(G);
 aut(G.5);
-M2!IgusaInvariants(CC10);
+IgusaInvariants(CC10);
 
 // The curve with automorphism group GL(2,3).
 K<zeta8> := CyclotomicField(8);
@@ -58,9 +61,9 @@ GroupName(G);
 // We are going to find an explicit isomorphism between GL(2,3) and the automorphism group of the hyperelliptic curve.
 // In order to do this, we need to find possibles elements of orders 2 and 3 in the automorphism group that can be the images of the generators of GL(2,3).
 [Order(g): g in G];
-[aut(g): g in G | Order(g) eq 2];
+// [aut(g): g in G | Order(g) eq 2]; // You can uncomment this line to see the elements of order 2 in the automorphism group.
 beta2 := [g: g in G | Order(g) eq 2][2];
-[aut(g): g in G | Order(g) eq 3];
+// [aut(g): g in G | Order(g) eq 3];
 beta3 := [g: g in G | Order(g) eq 3][1];
 GL23 := GL(2, GF(3));
 phi := hom< GL23 -> G | [beta2, beta3]>; // This is the explicit isomorphism.
@@ -68,8 +71,7 @@ GroupName(Image(phi)); // We can check that the image of the map is the whole gr
 aut(phi(Matrix([[1,1],[0,1]])));
 aut(phi(Matrix([[1,0],[1,1]])));
 aut(phi(Matrix([[-1,0],[0,1]])));
-M2!IgusaInvariants(CG);
-DifferentialSpace(Divisor(X));
+IgusaInvariants(CG);
 <aut(beta2)(X),aut(beta2)(Y)>;
 
 // The curve with automorphism group C3:D4.
@@ -84,7 +86,7 @@ tau2 := G.2;
 tau6 := G.(-10);
 gens := [aut(G.(-5)),aut(G.2),aut(G.(-10))];
 [iota^2, tau2^2, tau6^6, (iota,tau2), (tau2,tau6), tau6^iota/tau6^5/tau2]; // This is a check that the generators we have selected match the presentation of the group that can be found in LMFDB.
-M2!IgusaInvariants(CG);
+IgusaInvariants(CG);
 
 // The curve with automorphism group C2 wr C5.
 K<zeta5> := ext<GF(2)| Polynomial([1,1,1,1,1])>; 
@@ -93,8 +95,7 @@ CG := HyperellipticCurve(x^5,1);
 // G, aut  := AutomorphismGroupOfHyperellipticCurve(CG: explicit := true, geometric := true);
 G := GeometricAutomorphismGroupFromIgusaInvariants(IgusaInvariants(CG));
 GroupName(G);
-aut(G.5);
-M2!IgusaInvariants(CG);
+IgusaInvariants(CG);
 
 // The curve with automorphism group SL(2,5).
 K := GF(5);
@@ -105,9 +106,9 @@ GroupName(G);
 // We are going to find an explicit isomorphism between SL(2,5) and the automorphism group of the hyperelliptic curve as before.
 // We need to find possibles elements of orders 3 and 4 in the automorphism group that can be the images of the generators of SL(2,5).
 [Order(g): g in G];
-[aut(g): g in G | Order(g) eq 3];
+// [aut(g): g in G | Order(g) eq 3]; 
 beta3 := [g: g in G | Order(g) eq 3][18]; // Here, we have also manually identified generators for the group. You can see below how.
-[aut(g): g in G | Order(g) eq 4];
+// [aut(g): g in G | Order(g) eq 4]; 
 beta4 := [g: g in G | Order(g) eq 4][22];
 SL25 := SL(2, GF(5));
 phi := hom< SL25 -> G | [beta4, beta3]>; // This is the explicit isomorphism.
@@ -115,18 +116,19 @@ GroupName(Image(phi)); // We can check that the image of the map is the whole gr
 aut(phi(Matrix([[1,1],[0,1]])));
 aut(phi(Matrix([[1,0],[1,1]])));
 BasisOfHolomorphicDifferentials(CG);
-SheafOfDifferentials(CG);   
 
 // In order to find manually what the generators are, we looped over all elements of order 3 and 4 and see when the elements generated SL(2,5).
-for beta3 in [g: g in G | Order(g) eq 3] do
-    for beta4 in [g: g in G | Order(g) eq 4] do
-        SL25 := SL(2, GF(5));
-        phi := hom< SL25 -> G | [beta4, beta3]>; 
-        if GroupName(Image(phi)) eq "SL(2,5)" then
-        <beta3,beta4,DefiningEquations(aut(phi(Matrix([[1,1],[0,1]]))))>; // We can check that the image of the map is the whole group.
-        end if;
-            end for;
-end for;
+//for beta3 in [g: g in G | Order(g) eq 3] do
+//    for beta4 in [g: g in G | Order(g) eq 4] do
+//        SL25 := SL(2, GF(5));
+//        phi := hom< SL25 -> G | [beta4, beta3]>; 
+//        if GroupName(Image(phi)) eq "SL(2,5)" then
+//        <beta3,beta4,DefiningEquations(aut(phi(Matrix([[1,1],[0,1]]))))>; // We can check that the image of the map is the whole group.
+//        end if;
+//            end for;
+//end for;
+
+// -----------------------------------------------------------------------------------------------------------
 
 // We know proceed to study the automorphism strata corresponding to the groups C2xC2, D4, D6 and C2^5.
 
@@ -346,8 +348,8 @@ Expand(symphi*emb); // We can check that the action of the tau2 and tau3 is triv
 Expand(tau3*symphi*emb); 
 Expand(tau2*symphi*emb);
 Cl := Scheme(P11,x1-l*x0); // This is the curve corresponding to (E_0,\phi_0) x X(2) inside of P^1 x P^1.
-sing := IrreducibleComponents(ReducedSubscheme(JacobianSubrankScheme(Clim)))[1];
 Clim := emb(symphi(Cl)); // The image inside of the weighted projective space.
+sing := IrreducibleComponents(ReducedSubscheme(JacobianSubrankScheme(Clim)))[1];
 
 Csing := Scheme(P11, x0); // This is the curve corresponding to the points of P^1 that do not define an elliptic curve.
 Climsing := emb(symphi(Csing)); // The image of the previous curve is the closed subvariety whose complement defines $\mathcal{M}_{ell}\C_2$.
@@ -361,6 +363,7 @@ CD413 := Scheme(P11, y0*(x0-x1)-x0*y1);
 IrreducibleComponents(ReducedSubscheme(emb(symphi(CD413))));
 
 
+// -----------------------------------------------------------------------------------------------------------
 
 // Study of the stratum associated to the curve D4
 K := Rationals();
@@ -391,6 +394,8 @@ F<x0,x1> := FieldOfFractions(CoordinateRing(P1));
 DefiningEquations(rat);
 [(-(x0 - 5/2*x1)/8)^i*Evaluate(eqsII[i],[(2*x0 - 3*x1)/(-8*x0 + 20*x1),1,1]): i in [1..5]]; // Here we can check that when we choose f1=(2*x0 - 3*x1)/(-8*x0 + 20*x1), f3=1, f5=1, we can parametrise all elements in the strata.
 
+
+// -----------------------------------------------------------------------------------------------------------
 
 // Study of the stratum associated to the curve D6
 // In characteristic not three
@@ -450,6 +455,7 @@ DefiningEquations(rat);
 [(x0)^(-i)*Evaluate(eqsII[i],[x1,0,x0-1,0,1]): i in [1..5]];
 
 
+// -----------------------------------------------------------------------------------------------------------
 
 // Study of the stratum associated to the curve C2^5
 K<zeta5> := ext<GF(2)| Polynomial([1,1,1,1,1])>; 
@@ -472,8 +478,10 @@ IrreducibleComponents(ReducedSubscheme(BaseScheme(invrat)));
 F<x0,x1> := FieldOfFractions(CoordinateRing(P1));
 DefiningEquations(rat);
 
-
+// -----------------------------------------------------------------------------------------------------------
 // PART II: THE EKEDAHL-OORT STRATA
+// -----------------------------------------------------------------------------------------------------------
+
 // Construction of the strata of curves in characteristic 2 with p-rank 1
 K := GF(2);
 P := ProjectiveSpace(K,[2,2,2,2,2,2,2,1,1,1,1]);
@@ -517,13 +525,6 @@ HWmat := Matrix([[Coefficient(pow, p-1), Coefficient(pow, 2*p-1)],[Coefficient(p
 HWmatfr := Matrix([[Coefficient(pow, p-1)^p, Coefficient(pow, 2*p-1)^p],[Coefficient(pow, p-2)^p,Coefficient(pow, 2*p-2)^p]]);
 rankmat := HWmat*HWmatfr;
 
-
-for p in PrimesInInterval(3,50) do 
-SplittingField(SupersingularPolynomial(p));
-Degree(SupersingularPolynomial(p));
-end for;
-
-
 // This piece of code allows us to construct the strata of EO type (1,1), and the intersection with the C2 x C2 strata, for primes p in a range.
 for p in PrimesInInterval(3, 23) do 
   K<a>:= GF(p,2);
@@ -546,23 +547,20 @@ for p in PrimesInInterval(3, 23) do
   printf "\n\n Prime: %o\n", p;
   AOp;
   printf "Irreducible p-rank 1 strata?: %o\n", IsIrreducible(AOp);
-  printf "Reduced p-rank 1 strata?: %o\n", IsReduced(AOp);
-  printf "Number of singular points: %o\n", #IrreducibleComponents(ReducedSubscheme(JacobianSubrankScheme(AOp)));
+  //  printf "Reduced p-rank 1 strata?: %o\n", IsReduced(AOp);
+  // printf "Number of singular points: %o\n", #IrreducibleComponents(ReducedSubscheme(JacobianSubrankScheme(AOp)));
   // printf "Number of components of the intersection with C2xC2 strata: %o\n", #IrreducibleComponents(ReducedSubscheme(Int1V4)); // This is the slowest command in this for loop.
-  printf "Number of supersingular elliptic curves in characteristic p: %o\n\n", Degree(SupersingularPolynomial(p));
+  // printf "Number of supersingular elliptic curves in characteristic p: %o\n\n", Degree(SupersingularPolynomial(p));
 end for;
 
 
-
-
-
-
-p := 5;
+// This code allows us to compute the other Ekedahl-Oort strata. It is painfully slow,(particularly the function to compute the supersingular locus), so we will not recommend running this function for any prime larger than 5.
+p := 3;
 K<a>:= GF(p,2);
 K := Rationals();
 Z := Integers();
-P := ProjectiveSpace(K,3); // y^2 = x (x - 1) (a3 x^3 + a2 x^2 + a1 x + a0)
-F<a0, a1, a2, a3> := CoordinateRing(P);
+P3 := ProjectiveSpace(K,3); // y^2 = x (x - 1) (a3 x^3 + a2 x^2 + a1 x + a0)
+F<a0, a1, a2, a3> := CoordinateRing(P3);
 f<x> := Polynomial([0, -a0, a0 - a1, a1 - a2, a2 - a3, a3]);
 GenC := HyperellipticCurve(f);
 FF<a0, a1, a2, a3> := BaseRing(GenC);
@@ -573,17 +571,16 @@ pow := f^(Z!n);
 HWmat := Matrix([[Coefficient(pow, p-1), Coefficient(pow, 2*p-1)],[Coefficient(pow, p-2),Coefficient(pow, 2*p-2)]]);
 HWmatfr := Matrix([[Coefficient(pow, p-1)^p, Coefficient(pow, 2*p-1)^p],[Coefficient(pow, p-2)^p,Coefficient(pow, 2*p-2)^p]]);
 rankmat := HWmat*HWmatfr;
-P4<a,b,c,d> := ProjectiveSpace(K,4);
-dummat := Matrix([[a,b],[c,d]])*Matrix([[a^p,b^p],[c^p,d^p]]);
-MinimalBasis(ReducedSubscheme(Scheme(P4,[dummat[1,1],dummat[2,2],dummat[1,2],dummat[2,1],Determinant(dummat)])));
-prank0 := Scheme(P, [rankmat[1,1],rankmat[2,1], rankmat[1,2], rankmat[2,2]]);
-prank0 := Scheme(P, rankmat[1,1]);
-anumber2 := Scheme(P, [HWmat[1,1], HWmat[1,2], HWmat[2,1], HWmat[2,2]]);
-phi := map<P->IP | eqsII>;
+prank0 := Scheme(P3, [rankmat[1,1],rankmat[2,1], rankmat[1,2], rankmat[2,2]]); // This is the scheme inside of P^3 that corresponds to the p-rank 0 curves.
+anumber2 := Scheme(P3, [HWmat[1,1], HWmat[1,2], HWmat[2,1], HWmat[2,2]]); // This is the scheme inside of P^3 that corresponds to the curves with a number 2.
+phi := map<P3->IP | eqsII>;
 J := ideal< CoordinateRing(IP) | &cat[ DefiningEquations(Image(phi, prank0, d)) : d in  [1..15]]>;
-SSp := Scheme(IP,MinimalBasis(J));
-SSp;
+SS := Scheme(IP,MinimalBasis(J)); // This is the supersingular locus in terms of the Igusa invariants.
+IsIrreducible(SS);
+IrreducibleComponents(SS);
+IsReduced(SS);
+IrreducibleComponents(ReducedSubscheme(JacobianSubrankScheme(SS)));
+J := ideal< CoordinateRing(IP) | &cat[ DefiningEquations(Image(phi, anumber2, d)) : d in  [1..15]]>;
+SSp := Scheme(IP,MinimalBasis(J)); // This is the superspecial locus in terms of the Igusa invariants. As a reminder, bear in mind this is empty when p<7.
 IsIrreducible(SSp);
 IrreducibleComponents(SSp);
-IsReduced(SSp);
-IrreducibleComponents(ReducedSubscheme(JacobianSubrankScheme(SSp)));
