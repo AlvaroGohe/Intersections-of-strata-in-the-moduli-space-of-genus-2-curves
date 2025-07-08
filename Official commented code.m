@@ -31,11 +31,11 @@ PolF<x> := PolynomialRing(F);
 C := HyperellipticCurve((x-a1)*(x-a2)*(x-a3)*(x-a4)*(x-a5)*(x-a6));
 F<a1, a2, a3, a4, a5, a6> := BaseField(C);
 II := IgusaInvariants(C);
-Write("Equations_Igusa_invariants.txt", II); // As we are interested in saving these on a text file, we prepare a string with variable names and values.
+Write("Equations_Igusa_Invariants.txt", II); // As we are interested in saving these on a text file, we prepare a string with variable names and values.
 for i in [1..#II] do
     output cat:= Sprintf("%o\n", i, II[i]);
 end for;
-Write("Equations_Invariants.txt", output); // Save the output to a text file.
+Write("Equations_Igusa_Invariants.txt", output); // Save the output to a text file.
  
 // -----------------------------------------------------------------------------------------------------------
 // PART I: THE AUTOMORPHISM STRATA
