@@ -9,4 +9,4 @@ This Magma file `Strata_in_the_moduli_space_of_genus_2_curves.m` contains explic
 - The construction of the quotients of genus two curves by automorphisms of order 2, as described in the paper.
 - The computation of the Ekedahl-Oort strata in positive characteristic using Hasse-Witt matrices.
 
-In the Mathematica file `Some_calculations_related_to_the_description_of_strata.nb` we check the formulas to express the Igusa invariants in terms of the $x$-coordinates of the Weierstrass points of the curves, and we compute models for the curves admitting a given automorphism group.
+In the Mathematica file `Some_calculations_related_to_the_description_of_strata.nb`, we check the formulas to express the Igusa invariants in terms of the $x$-coordinates of the Weierstrass points of the curves, and we compute models for the curves admitting a given automorphism group.
