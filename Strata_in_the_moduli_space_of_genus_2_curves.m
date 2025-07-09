@@ -1,4 +1,11 @@
-// This is code accompanying the paper "Intersections of the automorphism and the Ekedahl-Oort strata inside of M_2".
+// This is code accompanying the paper "Intersections of the automorphism and the Ekedahl-Oort strata in M_2".
+
+// This file provides explicit computations and constructions in the moduli space of genus 2 curves, such as:
+// - The description of the automorphism strata in term of the Igusa invariants, and the study of their geometric properties.
+// - The construction of universal families of genus two curves with those automorphism groups.
+// - The construction of the quotients of genus two curves by automorphisms of order 2, as described in the paper.
+// - The computation of the Ekedahl-Oort strata in positive characteristic through the Hasse-Witt matrix.
+// The code is organized in sections, each focusing on a different family of curves or stratum, and includes both characteristic zero and positive characteristic cases.
 
 // If you find any bug or mistake, or if you have any question, please don't hesitate in contacting me :)
 // email: alvaro.gohe@gmail.com
