@@ -31,12 +31,18 @@ PolF<x> := PolynomialRing(F);
 C := HyperellipticCurve((x-a1)*(x-a2)*(x-a3)*(x-a4)*(x-a5)*(x-a6));
 F<a1, a2, a3, a4, a5, a6> := BaseField(C);
 II := IgusaInvariants(C);
-Write("Equations_Igusa_Invariants.txt", II); // As we are interested in saving these on a text file, we prepare a string with variable names and values.
-for i in [1..#II] do
-    output cat:= Sprintf("%o\n", i, II[i]);
-end for;
-Write("Equations_Igusa_Invariants.txt", output); // Save the output to a text file.
- 
+System("rm Equations_Igusa_Invariants_Roots.txt"); // Delete the file if it exists, so we can write the new equations.
+Write("Equations_Igusa_Invariants_Roots.txt", II); // As we are interested in saving these on a text file, we prepare a string with variable names and values.
+// We also compute the equations in terms of the coefficients of the curve
+P := ProjectiveSpace(Rationals(),[2,2,2,2,2,2,2,1,1,1,1]);
+F<f0, f1, f2, f3, f4, f5, f6, g0, g1, g2, g3> := CoordinateRing(P);
+C := HyperellipticCurve(Polynomial([f0, f1, f2, f3, f4, f5, f6]),Polynomial([g0, g1, g2, g3]));
+F<f0, f1, f2, f3, f4, f5, f6, g0, g1, g2, g3>:= BaseRing(C);
+IIc := IgusaInvariants(C);
+System("rm Equations_Igusa_Invariants_Coefficients.txt");
+Write("Equations_Igusa_Invariants_Coefficients.txt", IIc); // As we are interested in saving these on a text file, we prepare a string with variable names and values.
+
+
 // -----------------------------------------------------------------------------------------------------------
 // PART I: THE AUTOMORPHISM STRATA
 // -----------------------------------------------------------------------------------------------------------
@@ -133,6 +139,7 @@ BasisOfHolomorphicDifferentials(CG);
 // We know proceed to study the automorphism strata corresponding to the groups C2xC2, D4, D6 and C2^5.
 
 // The strategy is going to be similar in the first three cases. We first identify an automorphism that allows us to find a model of the curve depending on parameters fi, gj.
+// This model has been computed using Mathematica.
 // We create a copy of a weighted projective space with variables fi, gj; where the fi have weight 2 and the gj have weight 1.
 // Then, we define a map from this space to the weighted projective space with weights 1,2,3,4,5 whose equations are given by the Igusa invariants of our model of the curve.
 // The strata that we are looking for is precisely the image under this map.
@@ -258,7 +265,7 @@ Evaluate(jInvariant(E2),[c1*(c2-1)/(c1-1)/c2,c1/c2,0,0]) eq Evaluate(jInvariant(
 eqsid := [Evaluate(eqsII[i]/eqsII[1]^i, [c1*(c2-1)/(c1-1)/c2,c1/c2,0,0]): i in [1..5]]; // These are the Igusa invariants corresponding to the curve that in the paper we referred to as $\mathcal{C}_{\lambda_1, \lambda_2}$.
 // The following curves corresponding to applying the transformation f_{\tau} simultaneously to c1 and c2.
 eqs12 := [Evaluate(eqsII[i]/eqsII[1]^i, [((1-c1)*c2)/(c1*(1-c2)),(1-c1)/(1-c2),0,0]): i in [1..5]]; 
-eqs13 := [Evaluate(eqsII[i]/eqsII[1]^i, [((-1+c2^(-1))*c2)/((-1+c1^(-1))*c1),c2/c1,0,0]): i in [1..5]];
+eqs13 := [Evaluate(eqsII[i]/eqsII[1]^i, [(-1 + c2)/(-1 + c1),c2/c1,0,0]): i in [1..5]];
 eqs23 := [Evaluate(eqsII[i]/eqsII[1]^i, [c1/c2,(c1*(-1+ c2))/((-1+c1)*c2),0,0]): i in [1..5]];
 eqs123 := [Evaluate(eqsII[i]/eqsII[1]^i, [(-1+c1)/(-1+c2),((-1+c1)*c2)/(c1*(-1+c2)),0,0]): i in [1..5]];
 eqs132 := [Evaluate(eqsII[i]/eqsII[1]^i, [c2/c1,(-1+c2)/(-1+c1),0,0]): i in [1..5]];
@@ -438,6 +445,7 @@ F<f0, f1, f2, g0, g1> := CoordinateRing(P);
 GenD6<x,y,z> := HyperellipticCurve(Polynomial([f0, f1, f2, -10*f0 - 5*f1 - 2*f2, 15*f0 + 5*f1 + f2, -6*f0 - f1, f0]),Polynomial([g0, g1, -3*g0 - g1, g0])); 
 FF<f0, f1, f2, g0, g1>:= BaseRing(GenD6);
 eqsII := [Numerator(i): i in IgusaInvariants(GenD6)];
+Factorisation(Numerator(Discriminant(GenD6)));
 IP<J2,J4,J6,J8,J10> := ProjectiveSpace(K,[1,2,3,4,5]);
 phi := map<P->IP | eqsII>;
 J := ideal< CoordinateRing(IP) | &cat[ DefiningEquations(Image(phi,P,d)) : d in  [1..10]] >;
